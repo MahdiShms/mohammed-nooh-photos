@@ -1,0 +1,966 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>معرض صور محمد ونوح</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&family=Plus+Jakarta+Sans:wght@400;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #f6f3ee;
+      --surface: #ffffff;
+      --surface-2: #efeae2;
+      --text: #151312;
+      --muted: #55504a;
+      --accent: #151312;
+      --accent-hover: #2d2926;
+      --accent-text: #ffffff;
+      --dl-blue: #1d4ed8;
+      --dl-blue-hover: #1e40af;
+      --find-amber: #b45309;
+      --find-amber-hover: #92400e;
+      --border: #dfd8cd;
+      --radius-lg: 22px;
+      --radius-md: 16px;
+      --radius-sm: 11px;
+      --shadow: 0 10px 28px rgba(21, 19, 18, 0.06);
+      --card-min: 235px;
+      --img-h: 245px;
+    }
+
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      margin: 0;
+      font-family: "Cairo", "Plus Jakarta Sans", system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      font-size: 16px;
+      line-height: 1.5;
+      overflow-x: hidden;
+    }
+
+    body.modal-open {
+      overflow: hidden;
+      touch-action: none;
+    }
+
+    html[lang="en"] body {
+      font-family: "Plus Jakarta Sans", "Cairo", system-ui, -apple-system, sans-serif;
+    }
+
+    .app-shell {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 14px 14px 64px;
+    }
+
+    header.topbar {
+      direction: ltr;
+      position: sticky;
+      top: 10px;
+      z-index: 40;
+      display: grid;
+      grid-template-columns: 92px 1fr 168px;
+      align-items: center;
+      gap: 10px;
+      background: rgba(255, 255, 255, 0.96);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 12px 14px;
+      box-shadow: var(--shadow);
+    }
+
+    .header-left { width: 92px; flex-shrink: 0; }
+    .header-center { direction: inherit; text-align: center; min-width: 0; }
+
+    .header-center h1 {
+      margin: 0;
+      font-size: clamp(1.12rem, 2.3vw, 1.55rem);
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .header-center p {
+      margin: 2px 0 0;
+      font-size: 0.9rem;
+      color: var(--muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .header-right { width: 168px; flex-shrink: 0; display: flex; justify-content: flex-end; }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      min-height: 44px;
+      padding: 0 16px;
+      border-radius: 999px;
+      border: 1.5px solid var(--border);
+      background: var(--surface);
+      color: var(--text);
+      font-family: inherit;
+      font-size: 0.94rem;
+      font-weight: 700;
+      cursor: pointer;
+      text-decoration: none;
+      white-space: nowrap;
+      transition: background-color 0.15s ease, border-color 0.15s ease, transform 0.1s ease;
+    }
+
+    .btn:active:not(:disabled) { transform: scale(0.98); }
+    .btn:hover:not(:disabled) { background: var(--surface-2); border-color: #bfb5a6; }
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    .btn-find {
+      background: var(--find-amber);
+      color: #ffffff;
+      border-color: var(--find-amber);
+      width: 100%;
+      padding: 0 14px;
+      font-size: 0.92rem;
+    }
+
+    .btn-find:hover:not(:disabled) {
+      background: var(--find-amber-hover);
+      border-color: var(--find-amber-hover);
+    }
+
+    .lang-btn { width: 100%; padding: 0 10px; font-size: 0.9rem; }
+
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-top: 12px;
+      padding: 12px 14px;
+      background: var(--surface);
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-md);
+      box-shadow: 0 4px 16px rgba(21, 19, 18, 0.03);
+    }
+
+    .size-group {
+      direction: ltr;
+      display: inline-grid;
+      grid-template-columns: repeat(3, 78px);
+      background: var(--surface-2);
+      padding: 4px;
+      border-radius: 999px;
+      border: 1.5px solid var(--border);
+      flex-shrink: 0;
+    }
+
+    .size-btn {
+      border: none;
+      background: transparent;
+      color: var(--muted);
+      font-family: inherit;
+      font-size: 0.9rem;
+      font-weight: 700;
+      min-height: 36px;
+      border-radius: 999px;
+      cursor: pointer;
+      transition: background-color 0.15s ease, color 0.15s ease;
+    }
+
+    .size-btn.active { background: var(--accent); color: var(--accent-text); }
+
+    .toolbar-actions {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+      min-width: 0;
+    }
+
+    .badge-pill {
+      font-size: 0.9rem;
+      font-weight: 700;
+      padding: 8px 14px;
+      border-radius: 999px;
+      background: var(--surface-2);
+      color: var(--text);
+      white-space: nowrap;
+    }
+
+    .action-pill {
+      min-height: 38px;
+      padding: 0 14px;
+      font-size: 0.88rem;
+    }
+
+    .status-line {
+      margin-top: 10px;
+      padding-inline: 6px;
+      font-size: 0.94rem;
+      font-weight: 600;
+      color: var(--muted);
+      min-height: 24px;
+    }
+
+    body.size-small { --card-min: 170px; --img-h: 180px; }
+    body.size-medium { --card-min: 235px; --img-h: 245px; }
+    body.size-large { --card-min: 335px; --img-h: 340px; }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(var(--card-min), 1fr));
+      gap: 16px;
+      margin-top: 10px;
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      box-shadow: var(--shadow);
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+      transition: transform 0.16s ease, box-shadow 0.16s ease, border-color 0.16s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 14px 30px rgba(21, 19, 18, 0.09);
+      border-color: #cfc6b8;
+    }
+
+    .card-media {
+      width: 100%;
+      height: var(--img-h);
+      background: var(--surface-2);
+      overflow: hidden;
+      cursor: pointer;
+    }
+
+    .card-media img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center 16%;
+      display: block;
+    }
+
+    .card-body {
+      padding: 11px;
+      display: flex;
+      flex-direction: column;
+      gap: 9px;
+      flex: 1;
+      justify-content: space-between;
+      min-width: 0;
+    }
+
+    .card-name {
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .card-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .card-dl {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 38px;
+      padding: 0 10px;
+      border-radius: var(--radius-sm);
+      background: var(--dl-blue);
+      color: #ffffff;
+      text-decoration: none;
+      font-size: 0.88rem;
+      font-weight: 700;
+      transition: background-color 0.15s ease;
+    }
+
+    .card-dl:hover { background: var(--dl-blue-hover); }
+
+    .card-open {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 34px;
+      padding: 0 10px;
+      border-radius: var(--radius-sm);
+      background: var(--surface-2);
+      color: var(--text);
+      text-decoration: none;
+      font-size: 0.82rem;
+      font-weight: 700;
+      border: 1px solid var(--border);
+      transition: background-color 0.15s ease;
+    }
+
+    .card-open:hover { background: #e5dfd4; }
+
+    .load-more-wrap { margin-top: 22px; text-align: center; }
+
+    .empty-state {
+      text-align: center;
+      padding: 48px 20px;
+      background: var(--surface);
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-lg);
+      margin-top: 12px;
+      font-size: 1rem;
+      color: var(--muted);
+    }
+
+    .mobile-find-dock { display: none; }
+
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(18, 16, 15, 0.64);
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      z-index: 100;
+      overscroll-behavior: contain;
+    }
+
+    .modal-backdrop.open { display: flex; }
+
+    .modal {
+      width: 100%;
+      max-width: 460px;
+      max-height: 90dvh;
+      overflow-y: auto;
+      background: var(--surface);
+      border: 1.5px solid var(--border);
+      border-radius: 24px;
+      padding: 22px;
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.28);
+      position: relative;
+      overscroll-behavior: contain;
+    }
+
+    .modal h2 { margin: 0 0 8px; font-size: 1.25rem; padding-inline-end: 40px; }
+    .modal p { margin: 0 0 16px; font-size: 0.94rem; color: var(--muted); }
+
+    .modal-close {
+      position: absolute;
+      top: 16px;
+      inset-inline-end: 16px;
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      border: 1.5px solid var(--border);
+      background: var(--surface-2);
+      color: var(--text);
+      font-size: 1.25rem;
+      cursor: pointer;
+    }
+
+    .choice-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px; }
+    .choice-card {
+      border: 2px solid var(--border);
+      border-radius: 18px;
+      padding: 16px 12px;
+      text-align: center;
+      cursor: pointer;
+      background: var(--bg);
+      transition: border-color 0.15s ease, background-color 0.15s ease;
+    }
+    .choice-card:hover { border-color: var(--find-amber); background: var(--surface-2); }
+    .choice-card strong { display: block; font-size: 1rem; margin-bottom: 4px; }
+    .choice-card span { font-size: 0.84rem; color: var(--muted); }
+
+    .preview-box { display: none; text-align: center; margin-bottom: 16px; }
+    .preview-box.has-img { display: block; }
+    .preview-box img {
+      width: 116px;
+      height: 116px;
+      border-radius: 50%;
+      object-fit: cover;
+      object-position: center 16%;
+      border: 3px solid var(--border);
+      margin-bottom: 6px;
+    }
+
+    .modal-status { font-size: 0.92rem; font-weight: 600; color: var(--muted); margin-bottom: 14px; min-height: 22px; }
+    .modal-footer { display: grid; grid-template-columns: 1fr 1.4fr; gap: 10px; }
+    input[type="file"] { display: none; }
+
+    @media (max-width: 760px) {
+      .app-shell { padding-bottom: 92px; }
+      header.topbar { grid-template-columns: 84px 1fr 8px; gap: 8px; padding: 10px 12px; }
+      .header-left { width: 84px; }
+      .header-right { display: none; }
+      .header-center p { display: none; }
+      .header-center h1 { font-size: 1.06rem; }
+      .toolbar { flex-direction: column; align-items: stretch; padding: 10px; }
+      .size-group { width: 100%; grid-template-columns: repeat(3, 1fr); }
+      .size-btn { width: 100%; }
+      .toolbar-actions { justify-content: flex-start; }
+      body.size-small { --card-min: 112px; --img-h: 132px; }
+      body.size-medium { --card-min: 165px; --img-h: 185px; }
+      body.size-large { --card-min: 290px; --img-h: 295px; }
+      .grid { gap: 12px; }
+      .mobile-find-dock {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        z-index: 44;
+        display: flex;
+        padding: 10px 14px calc(10px + env(safe-area-inset-bottom));
+        background: rgba(255, 255, 255, 0.96);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border-top: 1.5px solid var(--border);
+      }
+      .mobile-find-dock .btn-find { height: 48px; font-size: 1rem; }
+      .modal-backdrop.open { align-items: flex-end; padding: 0; }
+      .modal { max-width: 100%; border-radius: 24px 24px 0 0; padding: 20px 16px calc(22px + env(safe-area-inset-bottom)); }
+    }
+  </style>
+</head>
+<body class="size-medium">
+  <div class="app-shell">
+    <header class="topbar">
+      <div class="header-left">
+        <button class="btn lang-btn" id="langToggleBtn" type="button">English</button>
+      </div>
+
+      <div class="header-center">
+        <h1 id="titleText">معرض صور محمد ونوح</h1>
+        <p id="subtitleText">تصفح جميع الصور أو ابحث عن صورك بسهولة</p>
+      </div>
+
+      <div class="header-right">
+        <button class="btn btn-find" id="openSearchBtnDesktop" type="button">
+          <span id="findBtnTextDesktop">ابحث عن صورك</span>
+        </button>
+      </div>
+    </header>
+
+    <div class="toolbar">
+      <div class="size-group" role="group" aria-label="Display size">
+        <button class="size-btn" type="button" data-size="small" id="sizeSmallBtn">صغير</button>
+        <button class="size-btn active" type="button" data-size="medium" id="sizeMediumBtn">متوسط</button>
+        <button class="size-btn" type="button" data-size="large" id="sizeLargeBtn">كبير</button>
+      </div>
+
+      <div class="toolbar-actions">
+        <span class="badge-pill" id="viewBadgeText">جميع الصور</span>
+
+        <button class="btn action-pill" id="resetFilterBtn" type="button" style="display:none;">
+          <span id="showAllText">عرض الكل</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="status-line" id="statusText">جاري تحميل الألبوم...</div>
+    <div class="grid" id="photoGrid"></div>
+    <div class="load-more-wrap" id="loadMoreWrap" style="display:none;">
+      <button class="btn" id="loadMoreBtn" type="button"></button>
+    </div>
+    <div class="empty-state" id="emptyState" style="display:none;"></div>
+  </div>
+
+  <div class="mobile-find-dock">
+    <button class="btn btn-find" id="openSearchBtnMobile" type="button">
+      <span id="findBtnTextMobile">ابحث عن صورك</span>
+    </button>
+  </div>
+
+  <div class="modal-backdrop" id="searchModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal">
+      <button class="modal-close" id="closeModalBtn" type="button" aria-label="Close">×</button>
+      <h2 id="modalTitle">ابحث عن صورك</h2>
+      <p id="modalDesc">التقط صورة سيلفي أو اختر صورة واضحة لوجهك ثم اضغط بحث (تُحذف تلقائياً عند عرض الكل أو التحديث).</p>
+
+      <div class="choice-grid">
+        <label class="choice-card" for="cameraInput">
+          <strong id="cameraChoiceTitle">التقاط سيلفي</strong>
+          <span id="cameraChoiceSub">فتح الكاميرا الأمامية</span>
+          <input type="file" id="cameraInput" accept="image/*" capture="user" />
+        </label>
+        <label class="choice-card" for="galleryInput">
+          <strong id="uploadChoiceTitle">رفع صورة</strong>
+          <span id="uploadChoiceSub">اختيار صورة من الجهاز</span>
+          <input type="file" id="galleryInput" accept="image/*" />
+        </label>
+      </div>
+
+      <div class="preview-box" id="previewBox">
+        <img id="selfiePreview" alt="Selected face" />
+        <div id="selectedFileName" style="font-size:0.86rem; color:var(--muted);"></div>
+      </div>
+
+      <div class="modal-status" id="modalStatus"></div>
+
+      <div class="modal-footer">
+        <button class="btn" id="cancelModalBtn" type="button">إلغاء</button>
+        <button class="btn btn-find" id="runSearchBtn" type="button" disabled>بحث</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      const SCRIPT_URLS = [
+        "https://unpkg.com/@vladmandic/face-api/dist/face-api.js",
+        "https://cdn.jsdelivr.net/npm/@vladmandic/face-api/dist/face-api.js"
+      ];
+      const MODEL_URLS = [
+        "https://unpkg.com/@vladmandic/face-api/model",
+        "https://cdn.jsdelivr.net/npm/@vladmandic/face-api/model"
+      ];
+      const THRESHOLD = 0.50;
+      const PAGE_SIZE = 60;
+
+      const I18N = {
+        ar: {
+          title: "معرض صور محمد ونوح",
+          subtitle: "تصفح جميع الصور أو ابحث عن صورك بسهولة",
+          findBtn: "ابحث عن صورك",
+          langBtn: "English",
+          viewAll: "جميع الصور",
+          viewMatched: "صورك المطابقة",
+          showAll: "عرض الكل",
+          sizeSmall: "صغير",
+          sizeMedium: "متوسط",
+          sizeLarge: "كبير",
+          downloadOne: "تحميل",
+          openPhoto: "فتح",
+          loadingAlbum: "جاري تحميل الألبوم...",
+          loadingAiOnDemand: "جاري تحميل محرك البحث بالوجه...",
+          readyAll: (shown, total) => shown < total
+            ? "جاهز — عرض " + shown + " من أصل " + total + " صورة"
+            : "جاهز — إجمالي الصور: " + total,
+          readyFiltered: (n) => "تم العثور على " + n + " صورة خاصة بك",
+          loadMore: (rem) => "عرض المزيد (" + rem + " متبقية)",
+          noMatches: "لم يتم العثور على صور مطابقة. جرّب صورة أوضح للوجه من الأمام.",
+          emptyAlbum: "لا توجد صور في الألبوم حالياً.",
+          albumLoadError: (msg) => "تعذر تحميل ملف faces.json: " + msg,
+          modalTitle: "ابحث عن صورك",
+          modalDesc: "التقط سيلفي أو اختر صورة واضحة لوجهك ثم اضغط بحث (تُحذف تلقائياً عند عرض الكل أو التحديث).",
+          cameraTitle: "التقاط سيلفي",
+          cameraSub: "فتح الكاميرا الأمامية",
+          uploadTitle: "رفع صورة",
+          uploadSub: "اختيار صورة من الجهاز",
+          cancel: "إلغاء",
+          search: "بحث",
+          scanning: "جاري تحليل الوجه والبحث...",
+          noFace: "لم يتم التعرف على وجه بوضوح. جرّب صورة أوضح بإضاءة جيدة."
+        },
+        en: {
+          title: "معرض صور محمد ونوح",
+          subtitle: "Browse all photos or find yours easily",
+          findBtn: "Find My Photos",
+          langBtn: "العربية",
+          viewAll: "All Photos",
+          viewMatched: "Your Matched Photos",
+          showAll: "Show All",
+          sizeSmall: "Small",
+          sizeMedium: "Medium",
+          sizeLarge: "Large",
+          downloadOne: "Download",
+          openPhoto: "Open",
+          loadingAlbum: "Loading album...",
+          loadingAiOnDemand: "Loading face-search engine...",
+          readyAll: (shown, total) => shown < total
+            ? "Ready — Showing " + shown + " of " + total + " photos"
+            : "Ready — Total photos: " + total,
+          readyFiltered: (n) => "Found " + n + " photo(s) of you",
+          loadMore: (rem) => "Load More (" + rem + " remaining)",
+          noMatches: "No matching photos found. Try a clearer, front-facing photo in good light.",
+          emptyAlbum: "No photos in the album yet.",
+          albumLoadError: (msg) => "Failed to load faces.json: " + msg,
+          modalTitle: "Find My Photos",
+          modalDesc: "Take a selfie or choose a clear photo of your face, then tap Search (cleared on Show All or refresh).",
+          cameraTitle: "Take Selfie",
+          cameraSub: "Open front camera",
+          uploadTitle: "Upload Photo",
+          uploadSub: "Choose from device",
+          cancel: "Cancel",
+          search: "Search",
+          scanning: "Scanning face and searching...",
+          noFace: "Couldn't clearly detect a face. Try a clearer photo in good lighting."
+        }
+      };
+
+      let lang = "ar";
+      let allPhotos = [];
+      let displayedPhotos = [];
+      let visibleCount = PAGE_SIZE;
+      let isFiltered = false;
+      let albumErrorMsg = "";
+      let aiReady = false;
+      let aiLoadingPromise = null;
+      let selectedFile = null;
+      let previewObjectUrl = null;
+
+      const $ = (id) => document.getElementById(id);
+
+      function t(key, ...args) {
+        const val = I18N[lang][key];
+        return typeof val === "function" ? val(...args) : val;
+      }
+
+      function getDirectDownloadUrl(photo) {
+        return "https://drive.google.com/uc?export=download&id=" + photo.id;
+      }
+
+      function getOpenUrl(photo) {
+        return "https://drive.google.com/file/d/" + photo.id + "/view";
+      }
+
+      function clearSelfieMemory() {
+        selectedFile = null;
+        if (previewObjectUrl) {
+          URL.revokeObjectURL(previewObjectUrl);
+          previewObjectUrl = null;
+        }
+        $("selfiePreview").removeAttribute("src");
+        $("selectedFileName").textContent = "";
+        $("previewBox").classList.remove("has-img");
+        $("cameraInput").value = "";
+        $("galleryInput").value = "";
+        $("runSearchBtn").disabled = true;
+        $("modalStatus").textContent = "";
+      }
+
+      function syncToolbar() {
+        $("viewBadgeText").textContent = isFiltered ? t("viewMatched") : t("viewAll");
+        $("resetFilterBtn").style.display = isFiltered ? "inline-flex" : "none";
+      }
+
+      function applyLanguage(newLang) {
+        lang = newLang;
+        document.documentElement.lang = lang;
+        document.documentElement.dir = lang === "ar" ? "rtl" : "ltr";
+
+        $("titleText").textContent = t("title");
+        $("subtitleText").textContent = t("subtitle");
+        $("findBtnTextDesktop").textContent = t("findBtn");
+        $("findBtnTextMobile").textContent = t("findBtn");
+        $("langToggleBtn").textContent = t("langBtn");
+        $("showAllText").textContent = t("showAll");
+        $("sizeSmallBtn").textContent = t("sizeSmall");
+        $("sizeMediumBtn").textContent = t("sizeMedium");
+        $("sizeLargeBtn").textContent = t("sizeLarge");
+
+        $("modalTitle").textContent = t("modalTitle");
+        $("modalDesc").textContent = t("modalDesc");
+        $("cameraChoiceTitle").textContent = t("cameraTitle");
+        $("cameraChoiceSub").textContent = t("cameraSub");
+        $("uploadChoiceTitle").textContent = t("uploadTitle");
+        $("uploadChoiceSub").textContent = t("uploadSub");
+        $("cancelModalBtn").textContent = t("cancel");
+        $("runSearchBtn").textContent = t("search");
+
+        syncToolbar();
+
+        if (albumErrorMsg) {
+          $("statusText").textContent = t("albumLoadError", albumErrorMsg);
+        } else if (allPhotos.length > 0) {
+          const shown = Math.min(visibleCount, displayedPhotos.length);
+          $("statusText").textContent = isFiltered
+            ? t("readyFiltered", displayedPhotos.length)
+            : t("readyAll", shown, allPhotos.length);
+        }
+
+        renderGrid(displayedPhotos);
+      }
+
+      function renderGrid(list) {
+        const grid = $("photoGrid");
+        const empty = $("emptyState");
+        const loadMoreWrap = $("loadMoreWrap");
+
+        if (!list || list.length === 0) {
+          grid.innerHTML = "";
+          loadMoreWrap.style.display = "none";
+          empty.style.display = "block";
+          empty.textContent = isFiltered ? t("noMatches") : t("emptyAlbum");
+          return;
+        }
+
+        empty.style.display = "none";
+        const slice = list.slice(0, visibleCount);
+        const remaining = list.length - slice.length;
+
+        if (remaining > 0) {
+          loadMoreWrap.style.display = "block";
+          $("loadMoreBtn").textContent = t("loadMore", remaining);
+        } else {
+          loadMoreWrap.style.display = "none";
+        }
+
+        grid.innerHTML = slice.map((photo) => {
+          const previewUrl = "https://drive.google.com/thumbnail?id=" + photo.id + "&sz=w800";
+          const downloadUrl = getDirectDownloadUrl(photo);
+          const openUrl = getOpenUrl(photo);
+          return (
+            '<article class="card" data-id="' + photo.id + '">' +
+              '<div class="card-media" data-open-id="' + photo.id + '">' +
+                '<img src="' + previewUrl + '" loading="lazy" decoding="async" alt="' + (photo.name || "Wedding photo") + '" />' +
+              "</div>" +
+              '<div class="card-body">' +
+                '<div class="card-name" title="' + (photo.name || "") + '">' + (photo.name || photo.id) + "</div>" +
+                '<div class="card-actions">' +
+                  '<a class="card-dl" href="' + downloadUrl + '" download="' + (photo.name || (photo.id + ".jpg")) + '" target="_blank" rel="noopener noreferrer">' + t("downloadOne") + "</a>" +
+                  '<a class="card-open" href="' + openUrl + '" target="_blank" rel="noopener noreferrer">' + t("openPhoto") + "</a>" +
+                "</div>" +
+              "</div>" +
+            "</article>"
+          );
+        }).join("");
+      }
+
+      function loadScript(src) {
+        return new Promise((resolve, reject) => {
+          const s = document.createElement("script");
+          s.src = src;
+          s.async = true;
+          s.onload = () => resolve();
+          s.onerror = () => reject(new Error("Failed to load " + src));
+          document.head.appendChild(s);
+        });
+      }
+
+      async function ensureFaceApiLoaded() {
+        if (window.faceapi) return;
+        for (const url of SCRIPT_URLS) {
+          try {
+            await loadScript(url);
+            if (window.faceapi) return;
+          } catch (_) {}
+        }
+        throw new Error("Could not load face-api script");
+      }
+
+      async function loadModelsWithFallback() {
+        for (const modelUrl of MODEL_URLS) {
+          try {
+            await Promise.all([
+              faceapi.nets.ssdMobilenetv1.loadFromUri(modelUrl),
+              faceapi.nets.faceLandmark68Net.loadFromUri(modelUrl),
+              faceapi.nets.faceRecognitionNet.loadFromUri(modelUrl)
+            ]);
+            return;
+          } catch (_) {}
+        }
+        throw new Error("Could not load AI models");
+      }
+
+      async function ensureAiReady() {
+        if (aiReady) return;
+        if (!aiLoadingPromise) {
+          aiLoadingPromise = (async () => {
+            $("modalStatus").textContent = t("loadingAiOnDemand");
+            await ensureFaceApiLoaded();
+            await loadModelsWithFallback();
+            aiReady = true;
+            if (selectedFile) $("runSearchBtn").disabled = false;
+            $("modalStatus").textContent = "";
+          })().catch((err) => {
+            aiLoadingPromise = null;
+            $("modalStatus").textContent = err.message || "AI load error";
+            throw err;
+          });
+        }
+        return aiLoadingPromise;
+      }
+
+      function euclideanDistance(a, b) {
+        return Math.sqrt(a.reduce((sum, val, i) => sum + Math.pow(val - b[i], 2), 0));
+      }
+
+      function bestDistanceForPhoto(guestVector, faceVecs) {
+        if (!Array.isArray(faceVecs) || faceVecs.length === 0) return Infinity;
+        let best = Infinity;
+        for (const vec of faceVecs) {
+          const d = euclideanDistance(guestVector, vec);
+          if (d < best) best = d;
+        }
+        return best;
+      }
+
+      function handleFileSelection(file) {
+        if (!file) return;
+        if (previewObjectUrl) URL.revokeObjectURL(previewObjectUrl);
+        selectedFile = file;
+        previewObjectUrl = URL.createObjectURL(file);
+        $("selfiePreview").src = previewObjectUrl;
+        $("selectedFileName").textContent = file.name || "selfie.jpg";
+        $("previewBox").classList.add("has-img");
+        $("modalStatus").textContent = "";
+        if (aiReady) {
+          $("runSearchBtn").disabled = false;
+        } else {
+          ensureAiReady().catch(() => {});
+        }
+      }
+
+      function openSearchModal() {
+        $("searchModal").classList.add("open");
+        document.body.classList.add("modal-open");
+        if (!aiReady) ensureAiReady().catch(() => {});
+      }
+
+      function closeSearchModal() {
+        $("searchModal").classList.remove("open");
+        document.body.classList.remove("modal-open");
+      }
+
+      $("langToggleBtn").addEventListener("click", () => applyLanguage(lang === "ar" ? "en" : "ar"));
+
+      document.querySelectorAll(".size-btn").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          document.querySelectorAll(".size-btn").forEach((b) => b.classList.remove("active"));
+          btn.classList.add("active");
+          document.body.classList.remove("size-small", "size-medium", "size-large");
+          document.body.classList.add("size-" + btn.dataset.size);
+        });
+      });
+
+      $("loadMoreBtn").addEventListener("click", () => {
+        visibleCount += PAGE_SIZE;
+        renderGrid(displayedPhotos);
+        const shown = Math.min(visibleCount, displayedPhotos.length);
+        $("statusText").textContent = t("readyAll", shown, allPhotos.length);
+      });
+
+      $("photoGrid").addEventListener("click", (e) => {
+        const mediaEl = e.target.closest("[data-open-id]");
+        if (!mediaEl) return;
+        const id = mediaEl.getAttribute("data-open-id");
+        const photo = allPhotos.find((p) => p.id === id);
+        if (photo) {
+          window.open(getOpenUrl(photo), "_blank", "noopener,noreferrer");
+        }
+      });
+
+      $("openSearchBtnDesktop").addEventListener("click", openSearchModal);
+      $("openSearchBtnMobile").addEventListener("click", openSearchModal);
+      $("closeModalBtn").addEventListener("click", closeSearchModal);
+      $("cancelModalBtn").addEventListener("click", closeSearchModal);
+      $("searchModal").addEventListener("click", (e) => {
+        if (e.target === $("searchModal")) closeSearchModal();
+      });
+
+      $("cameraInput").addEventListener("change", (e) => handleFileSelection(e.target.files[0]));
+      $("galleryInput").addEventListener("change", (e) => handleFileSelection(e.target.files[0]));
+
+      $("runSearchBtn").addEventListener("click", async () => {
+        if (!selectedFile) return;
+        $("runSearchBtn").disabled = true;
+
+        try {
+          await ensureAiReady();
+          $("modalStatus").textContent = t("scanning");
+
+          const img = await faceapi.bufferToImage(selectedFile);
+          const detection = await faceapi.detectSingleFace(img).withFaceLandmarks().withFaceDescriptor();
+
+          if (!detection) {
+            $("modalStatus").textContent = t("noFace");
+            $("runSearchBtn").disabled = false;
+            return;
+          }
+
+          const guestVector = Array.from(detection.descriptor);
+          const matched = allPhotos
+            .map((photo) => ({ ...photo, dist: bestDistanceForPhoto(guestVector, photo.faces) }))
+            .filter((item) => item.dist < THRESHOLD)
+            .sort((a, b) => a.dist - b.dist);
+
+          isFiltered = true;
+          displayedPhotos = matched;
+          visibleCount = PAGE_SIZE;
+          syncToolbar();
+          $("statusText").textContent = matched.length > 0 ? t("readyFiltered", matched.length) : t("noMatches");
+          renderGrid(displayedPhotos);
+          closeSearchModal();
+        } catch (err) {
+          $("modalStatus").textContent = err.message || "Error scanning photo";
+        } finally {
+          if (selectedFile && aiReady) $("runSearchBtn").disabled = false;
+        }
+      });
+
+      $("resetFilterBtn").addEventListener("click", () => {
+        clearSelfieMemory();
+        isFiltered = false;
+        displayedPhotos = [...allPhotos];
+        visibleCount = PAGE_SIZE;
+        syncToolbar();
+        const shown = Math.min(visibleCount, displayedPhotos.length);
+        $("statusText").textContent = t("readyAll", shown, allPhotos.length);
+        renderGrid(displayedPhotos);
+      });
+
+      window.addEventListener("beforeunload", clearSelfieMemory);
+      window.addEventListener("pagehide", clearSelfieMemory);
+
+      async function init() {
+        applyLanguage("ar");
+        syncToolbar();
+        $("statusText").textContent = t("loadingAlbum");
+
+        try {
+          const res = await fetch("faces.json");
+          if (!res.ok) {
+            throw new Error("HTTP " + res.status);
+          }
+          const data = await res.json();
+          allPhotos = Array.isArray(data) ? data : (data.photos || []);
+          displayedPhotos = [...allPhotos];
+          visibleCount = PAGE_SIZE;
+          albumErrorMsg = "";
+          renderGrid(displayedPhotos);
+          syncToolbar();
+          const shown = Math.min(visibleCount, displayedPhotos.length);
+          $("statusText").textContent = t("readyAll", shown, allPhotos.length);
+
+          if ("requestIdleCallback" in window) {
+            requestIdleCallback(() => ensureAiReady().catch(() => {}), { timeout: 2500 });
+          } else {
+            setTimeout(() => ensureAiReady().catch(() => {}), 800);
+          }
+        } catch (err) {
+          albumErrorMsg = err.message || "Unknown error";
+          $("statusText").textContent = t("albumLoadError", albumErrorMsg);
+          renderGrid([]);
+        }
+      }
+
+      init();
+    })();
+  </script>
+</body>
+</html>
